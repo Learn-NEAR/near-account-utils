@@ -44,22 +44,20 @@ Sample Report
 
 */
 
-const path = require("path");
+const path = require('path');
 
-const { table } = require("table");
-const chalk = require("chalk");
+const { table } = require('table');
+const chalk = require('chalk');
 
 const chardet = require('chardet'); // character encoding detection
 
-const { fetchStorage } = require("../lib/utils");
+const { fetchStorage } = require('../lib/utils');
 
 const account = process.argv.pop();
 // const account = "dev-1588779149087";
 
 if (account === __filename) {
-  console.log(
-    chalk`{bold Storage Report: {red Please provide an account name}}`
-  );
+  console.log(chalk`{bold Storage Report: {red Please provide an account name}}`);
   console.log(`
   Usage:
 
@@ -69,13 +67,11 @@ if (account === __filename) {
 }
 
 (async () => {
-  const network = process.env.NEAR_ENV || "testnet";
+  const network = process.env.NEAR_ENV || 'testnet';
   const storage = await fetchStorage(account, network);
 
   if (Object.keys(storage).length == 0) {
-    console.log(
-      chalk`{bold Storage Report for {yellow ${account}}: {red Invalid account}}`
-    );
+    console.log(chalk`{bold Storage Report for {yellow ${account}}: {red Invalid account}}`);
     return;
   }
 
@@ -86,7 +82,7 @@ if (account === __filename) {
     {bold Storage Report for {yellow ${account}}}
     `);
 
-    let header = ["key", "value"].map((el) => chalk.bold(el));
+    let header = ['key', 'value'].map(el => chalk.bold(el));
 
     let data = [];
     data.push(header);
@@ -101,30 +97,28 @@ if (account === __filename) {
     const output = table(data, {
       columnCount: 2,
       columns: {
-        0: { width: 30, alignment: "right" },
-        1: { width: 80, alignment: "left" },
-      },
+        0: { width: 30, alignment: 'right' },
+        1: { width: 80, alignment: 'left' }
+      }
     });
 
     console.log(output);
   } else {
-    console.log(
-      chalk`{bold Storage Report for {yellow ${account}}: {red No records found}}`
-    );
+    console.log(chalk`{bold Storage Report for {yellow ${account}}: {red No records found}}`);
   }
 })();
 
-function transcode(data, source = "base64", target = "utf8") {
+function transcode(data, source = 'base64', target = 'utf8') {
   const ENCODINGS = [
-    "ascii", // For 7 bit ASCII data only. This encoding method is very fast, and will strip the high bit if set.
-    "base64", // An efficient (power of 2) and safe (over the wire) encoding format used to move data around the interwebs
-    "binary", // A way of encoding raw binary data into strings by using only the first 8 bits of each character.
-    "ucs2", // 2-bytes, little endian encoded Unicode characters. It can encode only BMP(Basic Multilingual Plane, U+0000 - U+FFFF).
-    "utf8", // Multi byte encoded Unicode characters. Many web pages and other document formats use UTF-8.
+    'ascii', // For 7 bit ASCII data only. This encoding method is very fast, and will strip the high bit if set.
+    'base64', // An efficient (power of 2) and safe (over the wire) encoding format used to move data around the interwebs
+    'binary', // A way of encoding raw binary data into strings by using only the first 8 bits of each character.
+    'ucs2', // 2-bytes, little endian encoded Unicode characters. It can encode only BMP(Basic Multilingual Plane, U+0000 - U+FFFF).
+    'utf8' // Multi byte encoded Unicode characters. Many web pages and other document formats use UTF-8.
   ];
 
-  if(!ENCODINGS.includes(source) || !ENCODINGS.includes(target)) {
-    throw new Error(`Unsupported transcoding: ${source} --> ${target}`)
+  if (!ENCODINGS.includes(source) || !ENCODINGS.includes(target)) {
+    throw new Error(`Unsupported transcoding: ${source} --> ${target}`);
   }
 
   return Buffer.from(data, source).toString(target);
@@ -134,6 +128,7 @@ function format(text) {
   try {
     return JSON.stringify(JSON.parse(text), null, 2);
   } catch (error) {
+    return text;
     // const encoding = chardet.detect(Buffer.from(text));
     // const analysis = chardet.analyse(Buffer.from(text))
 
